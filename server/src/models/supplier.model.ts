@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Product} from './product.model';
 
 @model({
   settings: {
@@ -71,6 +72,8 @@ export class Supplier extends Entity {
   })
   deleted?: boolean;
 
+  @hasMany(() => Product)
+  products: Product[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

@@ -6,3 +6,4 @@ export * from './category.model';
 export * from './contract.model';
 export * from './package.model';
 export * from './order.model';
+export * from './order-has-product.model';

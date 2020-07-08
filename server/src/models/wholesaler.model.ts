@@ -1,4 +1,6 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Order} from './order.model';
+import {Contract} from './contract.model';
 
 @model({
   settings: {
@@ -77,6 +79,11 @@ export class Wholesaler extends Entity {
   })
   deleted?: boolean;
 
+  @hasMany(() => Order)
+  orders: Order[];
+
+  @hasMany(() => Contract)
+  contracts: Contract[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

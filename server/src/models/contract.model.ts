@@ -59,6 +59,10 @@ export class Contract extends Entity {
   })
   deleted?: boolean;
 
+  @property({
+    type: 'string',
+  })
+  packageId?: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

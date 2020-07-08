@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Wholesaler} from './wholesaler.model';
 
 @model({
   settings: {
@@ -14,7 +15,7 @@ export class Company extends Entity {
     type: 'string',
     id: true,
     generated: true,
-    required: true,
+    required: false,
     mongodb: {dataType: 'ObjectId'}
   })
   id: string;
@@ -71,6 +72,8 @@ export class Company extends Entity {
   })
   deleted?: boolean;
 
+  @hasMany(() => Wholesaler)
+  wholesalers: Wholesaler[];
   // Define well-known properties here
 
   // Indexer property to allow additional data

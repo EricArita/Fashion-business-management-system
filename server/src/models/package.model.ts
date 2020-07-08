@@ -1,4 +1,5 @@
-import {Entity, model, property} from '@loopback/repository';
+import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Contract} from './contract.model';
 
 @model({settings: {strict: false}})
 export class Package extends Entity {
@@ -65,6 +66,8 @@ export class Package extends Entity {
   })
   deleted?: boolean;
 
+  @hasMany(() => Contract)
+  contracts: Contract[];
   // Define well-known properties here
 
   // Indexer property to allow additional data
