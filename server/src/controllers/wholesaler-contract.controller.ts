@@ -29,7 +29,7 @@ export class WholesalerContractController {
   @get('/wholesalers/{id}/contracts', {
     responses: {
       '200': {
-        description: 'Array of Wholesaler has many Contract',
+        description: 'Array of Contracts that belong to a specific Wholesaler',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Contract)},
@@ -48,7 +48,7 @@ export class WholesalerContractController {
   @post('/wholesalers/{id}/contracts', {
     responses: {
       '200': {
-        description: 'Wholesaler model instance',
+        description: 'Contract model instance',
         content: {'application/json': {schema: getModelSchemaRef(Contract)}},
       },
     },

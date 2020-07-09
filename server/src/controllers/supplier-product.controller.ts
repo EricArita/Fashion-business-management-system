@@ -29,7 +29,7 @@ export class SupplierProductController {
   @get('/suppliers/{id}/products', {
     responses: {
       '200': {
-        description: 'Array of Supplier has many Product',
+        description: 'Array of Products that belong to a specific Supplier',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Product)},

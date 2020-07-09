@@ -15,7 +15,7 @@ export class Supplier extends Entity {
     type: 'string',
     id: true,
     generated: true,
-    required: true,
+    required: false,
     mongodb: {dataType: 'ObjectId'}
   })
   id: string;

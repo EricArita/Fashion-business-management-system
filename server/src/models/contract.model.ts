@@ -6,8 +6,10 @@ export class Contract extends Entity {
     type: 'string',
     id: true,
     generated: true,
+    required: false,
+    mongodb: {dataType: 'ObjectId'}
   })
-  id?: string;
+  id: string;
 
   @property({
     type: 'string',

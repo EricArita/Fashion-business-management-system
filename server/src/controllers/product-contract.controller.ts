@@ -29,7 +29,7 @@ export class ProductContractController {
   @get('/products/{id}/contracts', {
     responses: {
       '200': {
-        description: 'Array of Product has many Contract',
+        description: 'Array of Contracts that belong to a specific Product',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Contract)},

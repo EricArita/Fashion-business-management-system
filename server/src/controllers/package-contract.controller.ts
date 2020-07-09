@@ -29,7 +29,7 @@ export class PackageContractController {
   @get('/packages/{id}/contracts', {
     responses: {
       '200': {
-        description: 'Array of Package has many Contract',
+        description: 'Array of Contracts that belong to a specific Package',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Contract)},

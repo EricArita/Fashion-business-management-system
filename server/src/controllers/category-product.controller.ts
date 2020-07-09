@@ -29,7 +29,7 @@ export class CategoryProductController {
   @get('/categories/{id}/products', {
     responses: {
       '200': {
-        description: 'Array of Category has many Product',
+        description: 'Array of Products that belong to a specific Category',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Product)},
@@ -48,7 +48,7 @@ export class CategoryProductController {
   @post('/categories/{id}/products', {
     responses: {
       '200': {
-        description: 'Category model instance',
+        description: 'product model instance',
         content: {'application/json': {schema: getModelSchemaRef(Product)}},
       },
     },

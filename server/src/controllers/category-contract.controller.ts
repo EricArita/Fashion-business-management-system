@@ -29,7 +29,7 @@ export class CategoryContractController {
   @get('/categories/{id}/contracts', {
     responses: {
       '200': {
-        description: 'Array of Category has many Contract',
+        description: 'Array of Contracts that belong to a specific Category',
         content: {
           'application/json': {
             schema: {type: 'array', items: getModelSchemaRef(Contract)},
@@ -48,7 +48,7 @@ export class CategoryContractController {
   @post('/categories/{id}/contracts', {
     responses: {
       '200': {
-        description: 'Category model instance',
+        description: 'contract model instance',
         content: {'application/json': {schema: getModelSchemaRef(Contract)}},
       },
     },
