@@ -65,6 +65,7 @@ export class Package extends Entity {
 
   @property({
     type: 'boolean',
+    default: false,
   })
   deleted?: boolean;
 

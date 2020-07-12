@@ -12,6 +12,12 @@ export class OrderHasProduct extends Entity {
     mongodb: {dataType: 'ObjectId'}
   })
   id?: string;
+
+  @property({
+    type: 'boolean',
+    default: false,
+  })
+  deleted?: boolean;
   
   @belongsTo(() => Product)
   productId: string;

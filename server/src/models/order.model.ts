@@ -68,6 +68,7 @@ export class Order extends Entity {
 
   @property({
     type: 'boolean',
+    default: false,
   })
   deleted?: boolean;
 

@@ -58,6 +58,7 @@ export class Contract extends Entity {
 
   @property({
     type: 'boolean',
+    default: false,
   })
   deleted?: boolean;
 
