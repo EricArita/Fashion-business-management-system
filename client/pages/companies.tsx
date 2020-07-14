@@ -1,13 +1,15 @@
 import React from 'react';
-import { DashboardScreen } from '../ui_modules/home';
 // import { withRematch, initStore } from '@client/store';
 import { Page } from '../layouts/Page';
 import { PageHeader } from 'antd';
+import Router from 'next/router';
+import { CompaniesScreen } from '../ui_modules/partner/screens/Companies';
 
-interface Props {}
-interface State {}
+interface Props {
+  //
+}
 
-class Dashboard extends React.Component<Props, State> {
+class Company extends React.Component<Props, any> {
   static async getInitialProps(_context: any) {
     return {
       namespacesRequired: ['common'],
@@ -16,15 +18,14 @@ class Dashboard extends React.Component<Props, State> {
 
   render() {
     return (
-      <Page selectedMenuItem={'dashboard'} title='Tổng quan'>
+      <Page selectedMenuItem={'companies'} title='Doanh nghiệp - Thương hiệu'>
         <PageHeader
           className='site-page-header'
-          onBack={() => null}
-          title='Bảng điều khiển'
+          onBack={() => Router.push('/dashboard')}
+          title='Doanh nghiệp / Thương hiệu'
           ghost={false}
-          backIcon={false}
         />
-        <DashboardScreen />
+        <CompaniesScreen />
       </Page>
     );
   }
@@ -42,4 +43,4 @@ class Dashboard extends React.Component<Props, State> {
 
 // export default withRematch(initStore, mapState, mapDispatch)(Dashboard);
 
-export default Dashboard;
+export default Company;
