@@ -1,2 +1,2 @@
 export * from './routes';
-export * from './screens/Companies';
+export * from './screens/Wholesalers';
