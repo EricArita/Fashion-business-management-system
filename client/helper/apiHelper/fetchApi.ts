@@ -1,6 +1,6 @@
 import { config } from "../../config/config";
 
-const fetchAPI = async (httpMethod: string, api: string, requestBody?: any) => {
+export const fetchAPI = async (httpMethod: string, api: string, requestBody?: any) => {
   let url = config.url.apiServer + api;
 
   try {
@@ -44,5 +44,3 @@ const fetchAPI = async (httpMethod: string, api: string, requestBody?: any) => {
     console.log(err);
   }
 };
-
-export default fetchAPI;

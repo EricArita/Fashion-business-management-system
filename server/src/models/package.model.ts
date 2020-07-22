@@ -1,7 +1,15 @@
 import {Entity, model, property, hasMany} from '@loopback/repository';
 import {Contract} from './contract.model';
 
-@model({settings: {strict: false}})
+@model({
+  settings: {
+    strict: false,
+    scope: {
+      limit: 10,
+    },
+    strictObjectIDCoercion: true,
+  }
+})
 export class Package extends Entity {
   @property({
     type: 'string',

@@ -4,7 +4,7 @@ import { Page } from '../layouts/Page';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
 import Head from 'next/head';
-import { AddCompanyScreen } from '../ui_modules/partner/screens/AddCompany';
+import { AddCompanyScreen } from '../ui_modules/partner/screens/AddWholesaler';
 
 class AddCompanyPage extends React.Component<any, any> {
   static async getInitialProps(_context: any) {

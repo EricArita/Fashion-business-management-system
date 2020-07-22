@@ -1,6 +1,14 @@
 import {Entity, model, property} from '@loopback/repository';
 
-@model({settings: {strict: false}})
+@model({
+  settings: {
+    strict: false,
+    scope: {
+      limit: 10,
+    },
+    strictObjectIDCoercion: true,
+  }
+})
 export class Order extends Entity {
   @property({
     type: 'string',
