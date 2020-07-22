@@ -4,67 +4,60 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import './styles.less';
 import { EditableCell } from './components/EditableCell';
 import Router from 'next/router';
-// import { fetchAPI, linkModel } from '@client/core';
-// import { config } from '@client/config';
-import fetchAPI  from '../../../../helper/apiHelper/fetchApi';
+import { fetchAPI, constants} from '../../../../helper';
+
 const Screen = () => {
   const [form] = Form.useForm();
   const { Option } = Select;
   const [suppliers, setSuppliers] = useState([]);
   const [editingId, setEditingId] = useState('');
-  const [maxRecord, setMaxRecord] = useState(0);
-  const [pagination, setPagination] = useState({current: 0, page: 1});
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [pagination, setPagination] = useState({current: 0, totalPages: 0});
   const [loadingMore, setLoadingMore] = useState(false);
   const [supplierOptions, setSupplierOptions] = useState([]);
   const [loadingSupplierTable, setLoadingSupplierTable] = useState(true);
   const [styleDisbledAnchorTag, setStyleDisabledAnchorTag] = useState({});
+
   useEffect(() => {
-    getSuppliers();
+    countTotalSuppliers();
   }, []);
+
+  useEffect(() => {
+    if (totalRecords !== 0){
+      getSuppliers();
+    }
+  }, [totalRecords]);
 
   const columns = [
     {
       title: 'Mã',
       key: 'code',
+      dataIndex: 'code',
       editable: true,
-      render: (_: any, record: any) => {
-        return record.companyId.code;
-      },
     },
     {
       title: 'Tên',
       key: 'name',
+      dataIndex: 'name',
       editable: true,
-      render: (_: any, record: any) => {
-        return record.companyId.name;
-      },
     },
     {
       title: 'Địa chỉ',
       dataIndex: 'address',
       key: 'address',
       editable: true,
-      render: (_: any, record: any) => {
-        return record.companyId.address;
-      },
     },
     {
       title: 'Số điện thoại',
       dataIndex: 'phone',
       key: 'phone',
       editable: true,
-      render: (_: any, record: any) => {
-        return record.companyId.phone;
-      },
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
       editable: true,
-      render: (_: any, record: any) => {
-        return record.companyId.email;
-      },
     },
     {
       title: 'Công cụ',
@@ -75,7 +68,7 @@ const Screen = () => {
           <span>
             <a
               href='javascript:;'
-              onClick={() => saveEditedSupplier(record)}
+              onClick={() => saveEditedSupplier(record.id)}
               style={{
                 marginRight: 8,
               }}
@@ -126,12 +119,26 @@ const Screen = () => {
 
   const isEditing = (record: any) => record.id === editingId;
 
+  const countTotalSuppliers = async () => {
+    const res = await fetchAPI('GET', 'suppliers/count');
+    if (res.count !== undefined) {
+      let totalPages = (res.count / constants.LIMIT_RECORDS_PER_PAGE) | 0;   
+      if (res.count % constants.LIMIT_RECORDS_PER_PAGE !== 0) {
+        totalPages++;
+      }
+      pagination.totalPages = totalPages;
+      setPagination({...pagination});
+      setTotalRecords(res.count);
+    }
+  }
+
   const editSupplier = (record: any) => {
     const fieldsValue = {
-      name: record.companyId.name,
-      address: record.companyId.address,
-      phone: record.companyId.phone,
-      email: record.companyId.email,
+      code: record.code,
+      name: record.name,
+      address: record.address,
+      phone: record.phone,
+      email: record.email,
     };
     form.setFieldsValue(fieldsValue);
     setEditingId(record.id);
@@ -144,8 +151,8 @@ const Screen = () => {
   const deleteSupplier = async (recordId: string) => {
     try {
       const ret = await fetchAPI('PATCH', `suppliers/${recordId}`, { deleted: true });
-
       const index = suppliers.findIndex((supplier) => supplier.id === recordId);
+      
       if (index !== -1) {
         const newData = [...suppliers];
         newData.splice(index, 1);
@@ -165,17 +172,14 @@ const Screen = () => {
     setStyleDisabledAnchorTag({});
   };
 
-  const saveEditedSupplier = async (record: any) => {
+  const saveEditedSupplier = async (recordId: any) => {
     try {
       const updatedInfo = await form.validateFields();
-      const company = record.companyId;
-      Object.assign(company, updatedInfo);
+      const res = await fetchAPI('PATCH', `suppliers/${recordId}`, updatedInfo);
 
-      const ret = await fetchAPI('PATCH', `companies/${company.id}`, company);
-
-      const index = suppliers.findIndex((supplier) => supplier.id === record.id);
+      const index = suppliers.findIndex((supplier) => supplier.id === recordId);
       if (index !== -1) {
-        Object.assign(suppliers[index].companyId, updatedInfo);
+        Object.assign(suppliers[index], updatedInfo);
         setSuppliers(suppliers);
       }
       setEditingId('');
@@ -190,35 +194,28 @@ const Screen = () => {
 
   const getSuppliers = async () => {
     try {
-      if (pagination.current < pagination.page) {
+      if (pagination.current < pagination.totalPages) {
         if (pagination.current !== 0) setLoadingMore(true);
-        const ret = await fetchAPI('GET', {
-          path: 'suppliers',
-          params: {
-            page: pagination.current + 1,
-            filter: [
-              {
-                where: {
-                  deleted: false,
-                },
-              },
-            ],
-          },
+        const res = await fetchAPI('GET', 'suppliers', {
+          limit: constants.LIMIT_RECORDS_PER_PAGE,
+          skip: pagination.current * constants.LIMIT_RECORDS_PER_PAGE,
+          where: {
+            deleted: false
+          }
         });
-        const data = await linkModel(ret.res.data, 'companies', 'companyId');
 
         if (pagination.current === 0) {
-          setPagination(ret.res.pagination);
-          setMaxRecord(ret.res.pagination.count);
-          setSuppliers(data);
-          setSupplierOptions(data); // for filter
+          setSuppliers(res);
+          setSupplierOptions(res); // for filter
         }
         else { // onClick loadmore button
-          setPagination(ret.res.pagination);
-          setSuppliers([...suppliers, ...data]);
-          setSupplierOptions([...suppliers, ...data]);
+          setSuppliers([...suppliers, ...res]);
+          setSupplierOptions([...suppliers, ...res]);
           setLoadingMore(false);
         }
+        
+        pagination.current++;
+        setPagination({...pagination});
         setLoadingSupplierTable(false);
       }
     } catch (error) {
@@ -309,7 +306,7 @@ const Screen = () => {
             <Spin className='spinner-loading' indicator={spinnerIcon} spinning={loadingMore} />
           </Button>
           <span className={'pagination-info'}>
-            {suppliers.length} / {maxRecord}
+            {suppliers.length} / {totalRecords}
           </span>
         </div>
       </div>

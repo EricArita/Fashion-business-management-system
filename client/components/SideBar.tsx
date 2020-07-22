@@ -90,9 +90,6 @@ export class SideBar extends React.Component<SideBarProps, any> {
               </span>
             }
           >
-            <Menu.Item key='companies' onClick={() => Router.push('/companies')}>
-              <span>Doanh nghiệp/ Thương hiệu</span>
-            </Menu.Item>
             <Menu.Item key='suppliers' onClick={() => Router.push('/suppliers')}>
               <span>Nhà cung cấp</span>
             </Menu.Item>
