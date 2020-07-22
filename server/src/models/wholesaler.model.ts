@@ -25,12 +25,6 @@ export class Wholesaler extends Entity {
     type: 'string',
     required: true,
   })
-  companyId: string;
-
-  @property({
-    type: 'string',
-    required: true,
-  })
   code: string;
 
   @property({

@@ -4,7 +4,7 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import './styles.less';
 import { EditableCell } from './components/EditableCell';
 import Router from 'next/router';
-import fetchAPI  from '../../../../helper/apiHelper/fetchApi';
+import { fetchAPI } from '../../../../helper';
 // import { config } from '@client/config';
 
 const Screen = () => {

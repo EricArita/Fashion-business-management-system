@@ -1,6 +1,3 @@
-export * from './ping.controller';
-export * from './company-wholesaler.controller';
-export * from './company.controller';
 export * from './wholesaler.controller';
 export * from './supplier.controller';
 export * from './package.controller';
