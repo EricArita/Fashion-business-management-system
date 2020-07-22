@@ -9,15 +9,15 @@ import { fetchAPI } from '../../../../helper';
 
 const Screen = () => {
   const [form] = Form.useForm();
-  const [companies, setCompanies] = useState([]);
+  const [wholesalers, setwholesalers] = useState([]);
   const [editingId, setEditingId] = useState('');
   const [maxRecord, setMaxRecord] = useState(0);
   const [pagination, setPagination] = useState({});
   const [loadingMore, setLoadingMore] = useState(false);
-  const [loadingCompanyTable, setLoadingCompanyTable] = useState(true);
+  const [loadingwholesalerTable, setLoadingwholesalerTable] = useState(true);
   const [styleDisbledAnchorTag, setStyleDisabledAnchorTag] = useState({});
   useEffect(() => {
-    getCompanies();
+    getwholesalers();
   }, []);
 
   const columns = [
@@ -60,7 +60,7 @@ const Screen = () => {
           <span>
             <a
               href='javascript:;'
-              onClick={() => saveEditedCompany(record.id)}
+              onClick={() => saveEditedwholesaler(record.id)}
               style={{
                 marginRight: 8,
               }}
@@ -73,12 +73,12 @@ const Screen = () => {
           </span>
         ) : (
           <span>
-            <a style={{ ...styleDisbledAnchorTag, marginRight: 8 }} onClick={() => editCompany(record)}>
+            <a style={{ ...styleDisbledAnchorTag, marginRight: 8 }} onClick={() => editwholesaler(record)}>
               Sửa
             </a>
             <Popconfirm
               title='Bạn chắc chắn muốn xóa dữ liệu này?'
-              onConfirm={() => deleteCompany(record.id)}
+              onConfirm={() => deletewholesaler(record.id)}
               okText='Đồng ý'
               cancelText='Hủy'
             >
@@ -111,7 +111,7 @@ const Screen = () => {
 
   const isEditing = (record: any) => record.id === editingId;
 
-  const editCompany = (record: any) => {
+  const editwholesaler = (record: any) => {
     form.setFieldsValue({ ...record });
     setEditingId(record.id);
     setStyleDisabledAnchorTag({
@@ -120,15 +120,15 @@ const Screen = () => {
     });
   };
 
-  const deleteCompany = async (recordId: string) => {
+  const deletewholesaler = async (recordId: string) => {
     try {
-      const ret = await fetchAPI('PATCH', `companies/${recordId}`, { deleted: true });
+      const ret = await fetchAPI('PATCH', `wholesalers/${recordId}`, { deleted: true });
 
-      const index = companies.findIndex((company) => company.id === recordId);
+      const index = wholesalers.findIndex((wholesaler) => wholesaler.id === recordId);
       if (index !== -1) {
-        const newData = [...companies];
+        const newData = [...wholesalers];
         newData.splice(index, 1);
-        setCompanies(newData);
+        setwholesalers(newData);
       }
       setEditingId('');
       message.success('Xóa dữ liệu thành công');
@@ -144,15 +144,15 @@ const Screen = () => {
     setStyleDisabledAnchorTag({});
   };
 
-  const saveEditedCompany = async (recordId: string) => {
+  const saveEditedwholesaler = async (recordId: string) => {
     try {
       const updatedInfo = await form.validateFields();
-      const ret = await fetchAPI('PATCH', `companies/${recordId}`, updatedInfo);
+      const ret = await fetchAPI('PATCH', `wholesalers/${recordId}`, updatedInfo);
 
-      const index = companies.findIndex((company) => company.id === recordId);
+      const index = wholesalers.findIndex((wholesaler) => wholesaler.id === recordId);
       if (index !== -1) {
-        Object.assign(companies[index], updatedInfo);
-        setCompanies(companies);
+        Object.assign(wholesalers[index], updatedInfo);
+        setwholesalers(wholesalers);
       }
       setEditingId('');
       setStyleDisabledAnchorTag({});
@@ -164,9 +164,9 @@ const Screen = () => {
     }
   };
 
-  const getCompanies = async () => {
+  const getwholesalers = async () => {
     try {
-      const res = await fetchAPI('GET', 'companies', 
+      const res = await fetchAPI('GET', 'wholesalers', 
         {
           where: {
             deleted: false
@@ -175,8 +175,8 @@ const Screen = () => {
       );
       // setPagination(ret.res.pagination);
       // setMaxRecord(ret.res.pagination.count);
-      setCompanies(res);
-      setLoadingCompanyTable(false);
+      setwholesalers(res);
+      setLoadingwholesalerTable(false);
     } catch (error) {
       // tslint:disable-next-line: no-console
       console.log(error);
@@ -188,7 +188,7 @@ const Screen = () => {
     //   if (pagination['current'] < pagination['page']) {
     //     setLoadingMore(true);
     //     const ret = await fetchAPI('GET', {
-    //       path: 'companies',
+    //       path: 'wholesalers',
     //       params: {
     //         page: pagination['current'] + 1,
     //         filter: [
@@ -203,7 +203,7 @@ const Screen = () => {
     //     });
     //     if (ret.res.data.length !== 0) {
     //       setPagination(ret.res.pagination);
-    //       setCompanies([...companies, ...ret.res.data]);
+    //       setwholesalers([...wholesalers, ...ret.res.data]);
     //       setLoadingMore(false);
     //     }
     //   }
@@ -232,9 +232,9 @@ const Screen = () => {
               cell: EditableCell,
             },
           }}
-          dataSource={companies}
+          dataSource={wholesalers}
           columns={mergedColumns}
-          loading={loadingCompanyTable}
+          loading={loadingwholesalerTable}
           pagination={false}
           rowKey='id'
         />
@@ -246,11 +246,11 @@ const Screen = () => {
         </Button>
         <span className={'pagination-info'}>
           0/0
-          {/* {companies.length} / {maxRecord} */}
+          {/* {wholesalers.length} / {maxRecord} */}
         </span>
       </div>
     </Card>
   );
 };
 
-export const CompaniesScreen = Screen;
+export const WholesalersScreen = Screen;
