@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, Button, Form, Input, Row, Col, message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import Router from 'next/router';
-import fetchAPI  from '../../../../helper/apiHelper/fetchApi';
+import { fetchAPI } from '../../../../helper';
 
 const Screen = () => {
   const [isDisabled, setIsDisabled] = useState(false);

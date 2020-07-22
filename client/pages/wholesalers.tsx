@@ -18,11 +18,11 @@ class Company extends React.Component<Props, any> {
 
   render() {
     return (
-      <Page selectedMenuItem={'companies'} title='Doanh nghiệp - Thương hiệu'>
+      <Page selectedMenuItem={'wholesalers'} title='Nhà phân phối'>
         <PageHeader
           className='site-page-header'
           onBack={() => Router.push('/dashboard')}
-          title='Doanh nghiệp / Thương hiệu'
+          title='Nhà phân phối'
           ghost={false}
         />
         <CompaniesScreen />

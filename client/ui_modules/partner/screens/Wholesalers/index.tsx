@@ -221,7 +221,7 @@ const Screen = () => {
         <Button
           type='primary'
           icon={<PlusOutlined />}
-          onClick={() => Router.push('/addCompany')}
+          onClick={() => Router.push('/addWholesaler')}
           style={{ marginBottom: 16 }}
         >
           Thêm mới
