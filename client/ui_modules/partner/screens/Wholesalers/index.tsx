@@ -4,21 +4,28 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import './styles.less';
 import { EditableCell } from './components/EditableCell';
 import Router from 'next/router';
-import { fetchAPI } from '../../../../helper';
+import { fetchAPI, constants } from '../../../../helper';
 // import { config } from '@client/config';
 
 const Screen = () => {
   const [form] = Form.useForm();
-  const [companies, setCompanies] = useState([]);
+  const [wholesalers, setWholesalers] = useState([]);
   const [editingId, setEditingId] = useState('');
-  const [maxRecord, setMaxRecord] = useState(0);
-  const [pagination, setPagination] = useState({});
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [pagination, setPagination] = useState({current: 0, totalPages: 0});
   const [loadingMore, setLoadingMore] = useState(false);
-  const [loadingCompanyTable, setLoadingCompanyTable] = useState(true);
+  const [loadingWholesalerTable, setLoadingWholesalerTable] = useState(true);
   const [styleDisbledAnchorTag, setStyleDisabledAnchorTag] = useState({});
+ 
   useEffect(() => {
-    getCompanies();
+    countTotalWholesalers();
   }, []);
+
+  useEffect(() => {
+    if (totalRecords !== 0){
+      getWholesalers();
+    }
+  }, [totalRecords]);
 
   const columns = [
     {
@@ -60,7 +67,7 @@ const Screen = () => {
           <span>
             <a
               href='javascript:;'
-              onClick={() => saveEditedCompany(record.id)}
+              onClick={() => saveEditedwholesaler(record.id)}
               style={{
                 marginRight: 8,
               }}
@@ -73,12 +80,12 @@ const Screen = () => {
           </span>
         ) : (
           <span>
-            <a style={{ ...styleDisbledAnchorTag, marginRight: 8 }} onClick={() => editCompany(record)}>
+            <a style={{ ...styleDisbledAnchorTag, marginRight: 8 }} onClick={() => editWholesaler(record)}>
               Sửa
             </a>
             <Popconfirm
               title='Bạn chắc chắn muốn xóa dữ liệu này?'
-              onConfirm={() => deleteCompany(record.id)}
+              onConfirm={() => deleteWholesaler(record.id)}
               okText='Đồng ý'
               cancelText='Hủy'
             >
@@ -111,7 +118,24 @@ const Screen = () => {
 
   const isEditing = (record: any) => record.id === editingId;
 
-  const editCompany = (record: any) => {
+  const countTotalWholesalers = async () => {
+    const res = await fetchAPI('GET', 'wholesalers/count', {
+        deleted: false
+    });
+    console.log(res);
+
+    if (res.count !== undefined) {
+      let totalPages = (res.count / constants.LIMIT_RECORDS_PER_PAGE) | 0;   
+      if (res.count % constants.LIMIT_RECORDS_PER_PAGE !== 0) {
+        totalPages++;
+      }
+      pagination.totalPages = totalPages;
+      setPagination({...pagination});
+      setTotalRecords(res.count);
+    }
+  }
+
+  const editWholesaler = (record: any) => {
     form.setFieldsValue({ ...record });
     setEditingId(record.id);
     setStyleDisabledAnchorTag({
@@ -120,15 +144,15 @@ const Screen = () => {
     });
   };
 
-  const deleteCompany = async (recordId: string) => {
+  const deleteWholesaler = async (recordId: string) => {
     try {
-      const ret = await fetchAPI('PATCH', `companies/${recordId}`, { deleted: true });
+      const ret = await fetchAPI('PATCH', `wholesalers/${recordId}`, { deleted: true });
 
-      const index = companies.findIndex((company) => company.id === recordId);
+      const index = wholesalers.findIndex((wholesaler) => wholesaler.id === recordId);
       if (index !== -1) {
-        const newData = [...companies];
+        const newData = [...wholesalers];
         newData.splice(index, 1);
-        setCompanies(newData);
+        setWholesalers(newData);
       }
       setEditingId('');
       message.success('Xóa dữ liệu thành công');
@@ -144,15 +168,15 @@ const Screen = () => {
     setStyleDisabledAnchorTag({});
   };
 
-  const saveEditedCompany = async (recordId: string) => {
+  const saveEditedwholesaler = async (recordId: string) => {
     try {
       const updatedInfo = await form.validateFields();
-      const ret = await fetchAPI('PATCH', `companies/${recordId}`, updatedInfo);
+      const ret = await fetchAPI('PATCH', `wholesalers/${recordId}`, updatedInfo);
 
-      const index = companies.findIndex((company) => company.id === recordId);
+      const index = wholesalers.findIndex((wholesaler) => wholesaler.id === recordId);
       if (index !== -1) {
-        Object.assign(companies[index], updatedInfo);
-        setCompanies(companies);
+        Object.assign(wholesalers[index], updatedInfo);
+        setwholesalers(wholesalers);
       }
       setEditingId('');
       setStyleDisabledAnchorTag({});
@@ -164,19 +188,32 @@ const Screen = () => {
     }
   };
 
-  const getCompanies = async () => {
+  const getWholesalers = async () => {
     try {
-      const res = await fetchAPI('GET', 'companies', 
-        {
+      if (pagination.current < pagination.totalPages) {
+        if (pagination.current !== 0) setLoadingMore(true);
+        const res = await fetchAPI('GET', 'wholesalers', {
+          limit: constants.LIMIT_RECORDS_PER_PAGE,
+          skip: pagination.current * constants.LIMIT_RECORDS_PER_PAGE,
           where: {
             deleted: false
           }
+        });
+
+        if (pagination.current === 0) {
+          setWholesalers(res);
+          // setWholesalerOptions(res); // for filter
         }
-      );
-      // setPagination(ret.res.pagination);
-      // setMaxRecord(ret.res.pagination.count);
-      setCompanies(res);
-      setLoadingCompanyTable(false);
+        else { // onClick loadmore button
+          setWholesalers([...wholesalers, ...res]);
+          // setWholesalerOptions([...wholesalers, ...res]);
+          setLoadingMore(false);
+        }
+        
+        pagination.current++;
+        setPagination({...pagination});
+        setLoadingWholesalerTable(false);
+      }
     } catch (error) {
       // tslint:disable-next-line: no-console
       console.log(error);
@@ -188,7 +225,7 @@ const Screen = () => {
     //   if (pagination['current'] < pagination['page']) {
     //     setLoadingMore(true);
     //     const ret = await fetchAPI('GET', {
-    //       path: 'companies',
+    //       path: 'wholesalers',
     //       params: {
     //         page: pagination['current'] + 1,
     //         filter: [
@@ -203,7 +240,7 @@ const Screen = () => {
     //     });
     //     if (ret.res.data.length !== 0) {
     //       setPagination(ret.res.pagination);
-    //       setCompanies([...companies, ...ret.res.data]);
+    //       setwholesalers([...wholesalers, ...ret.res.data]);
     //       setLoadingMore(false);
     //     }
     //   }
@@ -232,9 +269,9 @@ const Screen = () => {
               cell: EditableCell,
             },
           }}
-          dataSource={companies}
+          dataSource={wholesalers}
           columns={mergedColumns}
-          loading={loadingCompanyTable}
+          loading={loadingWholesalerTable}
           pagination={false}
           rowKey='id'
         />
@@ -245,12 +282,11 @@ const Screen = () => {
           <Spin className='spinner-loading' indicator={spinnerIcon} spinning={loadingMore} />
         </Button>
         <span className={'pagination-info'}>
-          0/0
-          {/* {companies.length} / {maxRecord} */}
+          {wholesalers.length} / {totalRecords}
         </span>
       </div>
     </Card>
   );
 };
 
-export const CompaniesScreen = Screen;
+export const WholesalersScreen = Screen;

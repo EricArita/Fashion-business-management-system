@@ -3,7 +3,7 @@ import React from 'react';
 import { Page } from '../layouts/Page';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
-import { CompaniesScreen } from '../ui_modules/partner/screens/Wholesalers';
+import { WholesalersScreen } from '../ui_modules/partner/screens/Wholesalers';
 
 interface Props {
   //
@@ -25,7 +25,7 @@ class Company extends React.Component<Props, any> {
           title='Nhà phân phối'
           ghost={false}
         />
-        <CompaniesScreen />
+        <WholesalersScreen />
       </Page>
     );
   }

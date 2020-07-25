@@ -7,13 +7,13 @@ import { fetchAPI } from '../../../../helper';
 const Screen = () => {
   const [isDisabled, setIsDisabled] = useState(false);
 
-  const addCompany = async (values: any) => {
+  const addWholesaler = async (values: any) => {
     try {
-      const res = await fetchAPI('POST', 'companies', values);
+      const res = await fetchAPI('POST', 'wholesalers', values);
 
       if (res !== undefined) {
         message.success('Thêm dữ liệu thành công');
-        Router.push('/companies');
+        Router.push('/wholesalers');
       }
     } catch (error) {
       // tslint:disable-next-line: no-console
@@ -24,7 +24,7 @@ const Screen = () => {
 
   const onSubmit = async(values: any) => {
     setIsDisabled(true);
-    await addCompany(values);
+    await addWholesaler(values);
     setIsDisabled(false);
   };
 
@@ -74,4 +74,4 @@ const Screen = () => {
   );
 };
 
-export const AddCompanyScreen = Screen;
+export const AddWholesalerScreen = Screen;

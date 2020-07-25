@@ -120,7 +120,9 @@ const Screen = () => {
   const isEditing = (record: any) => record.id === editingId;
 
   const countTotalSuppliers = async () => {
-    const res = await fetchAPI('GET', 'suppliers/count');
+    const res = await fetchAPI('GET', 'suppliers/count', {
+      deleted: false
+    });
     if (res.count !== undefined) {
       let totalPages = (res.count / constants.LIMIT_RECORDS_PER_PAGE) | 0;   
       if (res.count % constants.LIMIT_RECORDS_PER_PAGE !== 0) {

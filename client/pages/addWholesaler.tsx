@@ -4,9 +4,9 @@ import { Page } from '../layouts/Page';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
 import Head from 'next/head';
-import { AddCompanyScreen } from '../ui_modules/partner/screens/AddWholesaler';
+import { AddWholesalerScreen } from '../ui_modules/partner/screens/AddWholesaler';
 
-class AddCompanyPage extends React.Component<any, any> {
+class AddWholesalerPage extends React.Component<any, any> {
   static async getInitialProps(_context: any) {
     return {
       namespacesRequired: ['common'],
@@ -15,29 +15,29 @@ class AddCompanyPage extends React.Component<any, any> {
 
   render() {
     return (
-      <Page selectedMenuItem={'companies'} title='Thêm doanh nghiệp - thương hiệu'>
+      <Page selectedMenuItem={'wholesalers'} title='Thêm nhà phân phối'>
         <PageHeader
           className='site-page-header'
-          onBack={() => Router.push('/companies')}
-          title='Thêm doanh nghiệp - thương hiệu'
+          onBack={() => Router.push('/wholesalers')}
+          title='Thêm nhà phân phối'
           ghost={false}
         />
-        <AddCompanyScreen />
+        <AddWholesalerScreen />
       </Page>
     );
   }
 }
 
-// const mapState = (rootState: any) => ({
-//   authUser: rootState.profileModel.authUser,
-// });
+const mapState = (rootState: any) => ({
+  authUser: rootState.profileModel.authUser,
+});
 
-// const mapDispatch = (_rootReducer: any) => {
-//   return {
-//     profileReducer: _rootReducer.profileModel,
-//   };
-// };
+const mapDispatch = (_rootReducer: any) => {
+  return {
+    profileReducer: _rootReducer.profileModel,
+  };
+};
 
 // export default withRematch(initStore, mapState, mapDispatch)(Dashboard);
 
-export default AddCompanyPage;
+export default AddWholesalerPage;
