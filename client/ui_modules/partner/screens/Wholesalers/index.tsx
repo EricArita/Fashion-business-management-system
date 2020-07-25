@@ -4,21 +4,28 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import './styles.less';
 import { EditableCell } from './components/EditableCell';
 import Router from 'next/router';
-import { fetchAPI } from '../../../../helper';
+import { fetchAPI, constants } from '../../../../helper';
 // import { config } from '@client/config';
 
 const Screen = () => {
   const [form] = Form.useForm();
-  const [wholesalers, setwholesalers] = useState([]);
+  const [wholesalers, setWholesalers] = useState([]);
   const [editingId, setEditingId] = useState('');
-  const [maxRecord, setMaxRecord] = useState(0);
-  const [pagination, setPagination] = useState({});
+  const [totalRecords, setTotalRecords] = useState(0);
+  const [pagination, setPagination] = useState({current: 0, totalPages: 0});
   const [loadingMore, setLoadingMore] = useState(false);
-  const [loadingwholesalerTable, setLoadingwholesalerTable] = useState(true);
+  const [loadingWholesalerTable, setLoadingWholesalerTable] = useState(true);
   const [styleDisbledAnchorTag, setStyleDisabledAnchorTag] = useState({});
+ 
   useEffect(() => {
-    getwholesalers();
+    countTotalWholesalers();
   }, []);
+
+  useEffect(() => {
+    if (totalRecords !== 0){
+      getWholesalers();
+    }
+  }, [totalRecords]);
 
   const columns = [
     {
@@ -73,12 +80,12 @@ const Screen = () => {
           </span>
         ) : (
           <span>
-            <a style={{ ...styleDisbledAnchorTag, marginRight: 8 }} onClick={() => editwholesaler(record)}>
+            <a style={{ ...styleDisbledAnchorTag, marginRight: 8 }} onClick={() => editWholesaler(record)}>
               Sửa
             </a>
             <Popconfirm
               title='Bạn chắc chắn muốn xóa dữ liệu này?'
-              onConfirm={() => deletewholesaler(record.id)}
+              onConfirm={() => deleteWholesaler(record.id)}
               okText='Đồng ý'
               cancelText='Hủy'
             >
@@ -111,7 +118,24 @@ const Screen = () => {
 
   const isEditing = (record: any) => record.id === editingId;
 
-  const editwholesaler = (record: any) => {
+  const countTotalWholesalers = async () => {
+    const res = await fetchAPI('GET', 'wholesalers/count', {
+        deleted: false
+    });
+    console.log(res);
+
+    if (res.count !== undefined) {
+      let totalPages = (res.count / constants.LIMIT_RECORDS_PER_PAGE) | 0;   
+      if (res.count % constants.LIMIT_RECORDS_PER_PAGE !== 0) {
+        totalPages++;
+      }
+      pagination.totalPages = totalPages;
+      setPagination({...pagination});
+      setTotalRecords(res.count);
+    }
+  }
+
+  const editWholesaler = (record: any) => {
     form.setFieldsValue({ ...record });
     setEditingId(record.id);
     setStyleDisabledAnchorTag({
@@ -120,7 +144,7 @@ const Screen = () => {
     });
   };
 
-  const deletewholesaler = async (recordId: string) => {
+  const deleteWholesaler = async (recordId: string) => {
     try {
       const ret = await fetchAPI('PATCH', `wholesalers/${recordId}`, { deleted: true });
 
@@ -128,7 +152,7 @@ const Screen = () => {
       if (index !== -1) {
         const newData = [...wholesalers];
         newData.splice(index, 1);
-        setwholesalers(newData);
+        setWholesalers(newData);
       }
       setEditingId('');
       message.success('Xóa dữ liệu thành công');
@@ -164,19 +188,32 @@ const Screen = () => {
     }
   };
 
-  const getwholesalers = async () => {
+  const getWholesalers = async () => {
     try {
-      const res = await fetchAPI('GET', 'wholesalers', 
-        {
+      if (pagination.current < pagination.totalPages) {
+        if (pagination.current !== 0) setLoadingMore(true);
+        const res = await fetchAPI('GET', 'wholesalers', {
+          limit: constants.LIMIT_RECORDS_PER_PAGE,
+          skip: pagination.current * constants.LIMIT_RECORDS_PER_PAGE,
           where: {
             deleted: false
           }
+        });
+
+        if (pagination.current === 0) {
+          setWholesalers(res);
+          // setWholesalerOptions(res); // for filter
         }
-      );
-      // setPagination(ret.res.pagination);
-      // setMaxRecord(ret.res.pagination.count);
-      setwholesalers(res);
-      setLoadingwholesalerTable(false);
+        else { // onClick loadmore button
+          setWholesalers([...wholesalers, ...res]);
+          // setWholesalerOptions([...wholesalers, ...res]);
+          setLoadingMore(false);
+        }
+        
+        pagination.current++;
+        setPagination({...pagination});
+        setLoadingWholesalerTable(false);
+      }
     } catch (error) {
       // tslint:disable-next-line: no-console
       console.log(error);
@@ -234,7 +271,7 @@ const Screen = () => {
           }}
           dataSource={wholesalers}
           columns={mergedColumns}
-          loading={loadingwholesalerTable}
+          loading={loadingWholesalerTable}
           pagination={false}
           rowKey='id'
         />
@@ -245,8 +282,7 @@ const Screen = () => {
           <Spin className='spinner-loading' indicator={spinnerIcon} spinning={loadingMore} />
         </Button>
         <span className={'pagination-info'}>
-          0/0
-          {/* {wholesalers.length} / {maxRecord} */}
+          {wholesalers.length} / {totalRecords}
         </span>
       </div>
     </Card>

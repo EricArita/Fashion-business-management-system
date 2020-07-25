@@ -15,10 +15,10 @@ class AddWholesalerPage extends React.Component<any, any> {
 
   render() {
     return (
-      <Page selectedMenuItem={'wholesalers'} title='Thêm doanh nghiệp - thương hiệu'>
+      <Page selectedMenuItem={'wholesalers'} title='Thêm nhà phân phối'>
         <PageHeader
           className='site-page-header'
-          onBack={() => Router.push('/companies')}
+          onBack={() => Router.push('/wholesalers')}
           title='Thêm nhà phân phối'
           ghost={false}
         />
