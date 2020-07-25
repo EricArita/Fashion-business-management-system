@@ -7,7 +7,7 @@ export const fetchAPI = async (httpMethod: string, api: string, requestBody?: an
     if (httpMethod === "GET") {
       if (httpMethod === "GET" && requestBody !== undefined && requestBody !== null) {
         const encodedQueryParams = encodeURI(JSON.stringify(requestBody));
-        url += `?filter=${encodedQueryParams}`;
+        url += url.includes("count") ? `?where=${encodedQueryParams}` : `?filter=${encodedQueryParams}`;
       }
 
       const response = await fetch(url, {
