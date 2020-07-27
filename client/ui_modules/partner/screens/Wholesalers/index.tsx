@@ -29,7 +29,7 @@ const Screen = () => {
 
   const columns = [
     {
-      title: 'Mã doanh nghiệp',
+      title: 'Mã',
       dataIndex: 'code',
       key: 'code',
       editable: true,
@@ -47,7 +47,7 @@ const Screen = () => {
       editable: true,
     },
     {
-      title: 'Số điện thoại',
+      title: 'SĐT',
       dataIndex: 'phone',
       key: 'phone',
       editable: true,
@@ -57,6 +57,12 @@ const Screen = () => {
       dataIndex: 'email',
       key: 'email',
       editable: true,
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'created_date',
+      key: 'created_date',
+      editable: false,
     },
     {
       title: 'Công cụ',

@@ -16,6 +16,11 @@ const Screen = () => {
   const [styleDisbledAnchorTag, setStyleDisabledAnchorTag] = useState({});
   const [loadingPackageTable, setLoadingPackageTable] = useState(false);
  
+  const formatterPrice = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'VND',
+  });
+  
   useEffect(() => {
     countTotalPackages();
   }, []);
@@ -39,24 +44,39 @@ const Screen = () => {
       dataIndex: 'formula',
       key: 'formula',
       editable: true,
+      render: (_: any, record: any) => {
+        return record.formula !== undefined ? record.formula : 'N/A';
+      }
     },
     {
       title: 'Sale',
-      dataIndex: 'sale',
       key: 'sale',
+      dataIndex: 'sale',
       editable: true,
+      render: (_: any, record: any) => {
+        return record.sale !== undefined ? formatterPrice.format(record.sale) : 'N/A';
+      }
     },
     {
       title: 'Tiền tệ',
-      dataIndex: 'currency',
       key: 'currency',
+      dataIndex: 'currency',
       editable: true,
+      render: (_: any, record: any) => {
+        return record.currency !== undefined ? record.currency : 'N/A';
+      }
     },
     {
       title: 'SEO',
       dataIndex: 'seo',
       key: 'seo',
       editable: true,
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'created_date',
+      key: 'created_date',
+      editable: false,
     },
     {
       title: 'Công cụ',
