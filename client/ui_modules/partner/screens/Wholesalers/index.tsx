@@ -182,7 +182,7 @@ const Screen = () => {
       const index = wholesalers.findIndex((wholesaler) => wholesaler.id === recordId);
       if (index !== -1) {
         Object.assign(wholesalers[index], updatedInfo);
-        setwholesalers(wholesalers);
+        setWholesalers(wholesalers);
       }
       setEditingId('');
       setStyleDisabledAnchorTag({});
