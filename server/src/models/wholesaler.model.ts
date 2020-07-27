@@ -50,6 +50,7 @@ export class Wholesaler extends Entity {
 
   @property({
     type: 'date',
+    default: "$now"
   })
   created_date?: string;
 
@@ -60,6 +61,7 @@ export class Wholesaler extends Entity {
 
   @property({
     type: 'date',
+    default: "$now"
   })
   updated_date?: string;
 
