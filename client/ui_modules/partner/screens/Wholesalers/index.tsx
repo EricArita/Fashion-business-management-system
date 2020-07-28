@@ -128,7 +128,6 @@ const Screen = () => {
     const res = await fetchAPI('GET', 'wholesalers/count', {
         deleted: false
     });
-    console.log(res);
 
     if (res.count !== undefined) {
       let totalPages = (res.count / constants.LIMIT_RECORDS_PER_PAGE) | 0;   
