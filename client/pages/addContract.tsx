@@ -3,13 +3,9 @@ import React from 'react';
 import { LayoutPage } from '../layouts/LayoutPage';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
-import { SuppliersScreen } from '../ui_modules/partner/screens/Suppliers';
+import { AddContractScreen } from '../ui_modules/sale/screens/AddContract';
 
-interface Props {
-  //
-}
-interface State {}
-class Dashboard extends React.Component<Props, State> {
+class Dashboard extends React.Component<any, any> {
   static async getInitialProps(_context: any) {
     return {
       namespacesRequired: ['common'],
@@ -18,28 +14,28 @@ class Dashboard extends React.Component<Props, State> {
 
   render() {
     return (
-      <LayoutPage selectedMenuItem={'suppliers'} title='Nhà cung cấp'>
+      <LayoutPage selectedMenuItem={'contracts'} title='Thêm loại hợp đồng'>
         <PageHeader
           className='site-page-header'
-          onBack={() => Router.push('/dashboard')}
-          title='Nhà cung cấp'
+          onBack={() => Router.push('/contracts')}
+          title='Thêm loại hợp đồng'
           ghost={false}
         />
-        <SuppliersScreen />
+        <AddContractScreen />
       </LayoutPage>
     );
   }
 }
 
-const mapState = (rootState: any) => ({
-  authUser: rootState.profileModel.authUser,
-});
+// const mapState = (rootState: any) => ({
+//   authUser: rootState.profileModel.authUser,
+// });
 
-const mapDispatch = (_rootReducer: any) => {
-  return {
-    profileReducer: _rootReducer.profileModel,
-  };
-};
+// const mapDispatch = (_rootReducer: any) => {
+//   return {
+//     profileReducer: _rootReducer.profileModel,
+//   };
+// };
 
 // export default withRematch(initStore, mapState, mapDispatch)(Dashboard);
 

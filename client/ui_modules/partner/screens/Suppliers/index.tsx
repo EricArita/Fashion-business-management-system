@@ -15,7 +15,7 @@ const Screen = () => {
   const [pagination, setPagination] = useState({current: 0, totalPages: 0});
   const [loadingMore, setLoadingMore] = useState(false);
   const [supplierOptions, setSupplierOptions] = useState([]);
-  const [loadingSupplierTable, setLoadingSupplierTable] = useState(true);
+  const [loadingSupplierTable, setLoadingSupplierTable] = useState(false);
   const [styleDisbledAnchorTag, setStyleDisabledAnchorTag] = useState({});
 
   useEffect(() => {
@@ -24,6 +24,7 @@ const Screen = () => {
 
   useEffect(() => {
     if (totalRecords !== 0){
+      setLoadingSupplierTable(true);
       getSuppliers();
     }
   }, [totalRecords]);
@@ -48,7 +49,7 @@ const Screen = () => {
       editable: true,
     },
     {
-      title: 'Số điện thoại',
+      title: 'SĐT',
       dataIndex: 'phone',
       key: 'phone',
       editable: true,
@@ -58,6 +59,12 @@ const Screen = () => {
       dataIndex: 'email',
       key: 'email',
       editable: true,
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'created_date',
+      key: 'created_date',
+      editable: false,
     },
     {
       title: 'Công cụ',

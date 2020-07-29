@@ -4,36 +4,35 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons';
 import './styles.less';
 import { EditableCell } from './components/EditableCell';
 import Router from 'next/router';
-import { fetchAPI, constants } from '../../../../helper';
-// import { config } from '@client/config';
+import { fetchAPI, constants} from '../../../../helper';
 
 const Screen = () => {
   const [form] = Form.useForm();
-  const [wholesalers, setWholesalers] = useState([]);
+  const [packages, setPackages] = useState([]);
   const [editingId, setEditingId] = useState('');
   const [totalRecords, setTotalRecords] = useState(0);
   const [pagination, setPagination] = useState({current: 0, totalPages: 0});
   const [loadingMore, setLoadingMore] = useState(false);
-  const [loadingWholesalerTable, setLoadingWholesalerTable] = useState(true);
   const [styleDisbledAnchorTag, setStyleDisabledAnchorTag] = useState({});
+  const [loadingPackageTable, setLoadingPackageTable] = useState(false);
  
+  const formatterPrice = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'VND',
+  });
+  
   useEffect(() => {
-    countTotalWholesalers();
+    countTotalPackages();
   }, []);
 
   useEffect(() => {
     if (totalRecords !== 0){
-      getWholesalers();
+      setLoadingPackageTable(true);
+      getPackages();
     }
   }, [totalRecords]);
 
   const columns = [
-    {
-      title: 'Mã',
-      dataIndex: 'code',
-      key: 'code',
-      editable: true,
-    },
     {
       title: 'Tên',
       dataIndex: 'name',
@@ -41,21 +40,36 @@ const Screen = () => {
       editable: true,
     },
     {
-      title: 'Địa chỉ',
-      dataIndex: 'address',
-      key: 'address',
+      title: 'Công thức',
+      dataIndex: 'formula',
+      key: 'formula',
       editable: true,
+      render: (_: any, record: any) => {
+        return record.formula !== undefined ? record.formula : 'N/A';
+      }
     },
     {
-      title: 'SĐT',
-      dataIndex: 'phone',
-      key: 'phone',
+      title: 'Sale',
+      key: 'sale',
+      dataIndex: 'sale',
       editable: true,
+      render: (_: any, record: any) => {
+        return record.sale !== undefined ? formatterPrice.format(record.sale) : 'N/A';
+      }
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: 'Tiền tệ',
+      key: 'currency',
+      dataIndex: 'currency',
+      editable: true,
+      render: (_: any, record: any) => {
+        return record.currency !== undefined ? record.currency : 'N/A';
+      }
+    },
+    {
+      title: 'SEO',
+      dataIndex: 'seo',
+      key: 'seo',
       editable: true,
     },
     {
@@ -73,7 +87,7 @@ const Screen = () => {
           <span>
             <a
               href='javascript:;'
-              onClick={() => saveEditedwholesaler(record.id)}
+              onClick={() => saveEditedPackage(record.id)}
               style={{
                 marginRight: 8,
               }}
@@ -86,16 +100,13 @@ const Screen = () => {
           </span>
         ) : (
           <span>
-            <a style={{ ...styleDisbledAnchorTag, marginRight: 8 }} onClick={() => editWholesaler(record)}>
+            <a style={{...styleDisbledAnchorTag, marginRight: 8}} onClick={() => editPackage(record)}>
               Sửa
             </a>
-            <Popconfirm
-              title='Bạn chắc chắn muốn xóa dữ liệu này?'
-              onConfirm={() => deleteWholesaler(record.id)}
-              okText='Đồng ý'
-              cancelText='Hủy'
-            >
-              <a style={styleDisbledAnchorTag}>Xóa</a>
+            <Popconfirm title='Bạn chắc chắn muốn xóa dữ liệu này?' onConfirm={() => deletePackage(record.id)} okText='Đồng ý' cancelText='Hủy'>
+              <a style={styleDisbledAnchorTag}>
+                Xóa
+              </a>
             </Popconfirm>
           </span>
         );
@@ -111,24 +122,38 @@ const Screen = () => {
     return {
       ...col,
       onCell: (record: any) => {
-        return {
+        const editing = isEditing(record);
+        const propObj = {
           record,
-          inputType: 'text',
+          inputType: col.dataIndex === 'sale' ? 'number' : 'text',
           dataIndex: col.dataIndex,
           title: col.title,
-          editing: isEditing(record),
+          editing,
         };
+
+        if (editing) {
+          if (record.formula !== undefined && record.formula !== '') {
+            if (col.dataIndex === 'sale' || col.dataIndex === 'currency') {
+              propObj.editing = false;
+            }
+          }
+          else if (record.sale !== undefined && record.sale !== '') {
+            if (col.dataIndex === 'formula') {
+              propObj.editing = false;
+            }
+          }
+        }
+        return propObj;
       },
     };
   });
 
   const isEditing = (record: any) => record.id === editingId;
 
-  const countTotalWholesalers = async () => {
-    const res = await fetchAPI('GET', 'wholesalers/count', {
-        deleted: false
+  const countTotalPackages = async () => {
+    const res = await fetchAPI('GET', 'packages/count', {
+      deleted: false
     });
-
     if (res.count !== undefined) {
       let totalPages = (res.count / constants.LIMIT_RECORDS_PER_PAGE) | 0;   
       if (res.count % constants.LIMIT_RECORDS_PER_PAGE !== 0) {
@@ -140,28 +165,29 @@ const Screen = () => {
     }
   }
 
-  const editWholesaler = (record: any) => {
+  const editPackage = (record: any) => {
     form.setFieldsValue({ ...record });
     setEditingId(record.id);
     setStyleDisabledAnchorTag({
-      'pointer-events': 'none',
+      pointerEvents: 'none',
       color: '#ccc',
     });
   };
 
-  const deleteWholesaler = async (recordId: string) => {
+  const deletePackage = async (recordId: string) => {
     try {
-      const ret = await fetchAPI('PATCH', `wholesalers/${recordId}`, { deleted: true });
+      await fetchAPI('PATCH', `packages/${recordId}`, {deleted: true});
 
-      const index = wholesalers.findIndex((wholesaler) => wholesaler.id === recordId);
+      const index = packages.findIndex((item) => item.id === recordId);
       if (index !== -1) {
-        const newData = [...wholesalers];
+        const newData = [...packages];
         newData.splice(index, 1);
-        setWholesalers(newData);
+        setPackages(newData);
       }
       setEditingId('');
       message.success('Xóa dữ liệu thành công');
-    } catch (err) {
+    }
+    catch (err) {
       // tslint:disable-next-line: no-console
       console.log(err);
       message.error('Không thể xóa dữ liệu do đã có lỗi xảy ra');
@@ -173,15 +199,15 @@ const Screen = () => {
     setStyleDisabledAnchorTag({});
   };
 
-  const saveEditedwholesaler = async (recordId: string) => {
+  const saveEditedPackage = async (recordId: string) => {
     try {
       const updatedInfo = await form.validateFields();
-      const ret = await fetchAPI('PATCH', `wholesalers/${recordId}`, updatedInfo);
+      await fetchAPI('PATCH', `packages/${recordId}`, updatedInfo);
 
-      const index = wholesalers.findIndex((wholesaler) => wholesaler.id === recordId);
+      const index = packages.findIndex((item) => item.id === recordId);
       if (index !== -1) {
-        Object.assign(wholesalers[index], updatedInfo);
-        setWholesalers(wholesalers);
+        Object.assign(packages[index], updatedInfo);
+        setPackages(packages);
       }
       setEditingId('');
       setStyleDisabledAnchorTag({});
@@ -193,11 +219,11 @@ const Screen = () => {
     }
   };
 
-  const getWholesalers = async () => {
+  const getPackages = async () => {
     try {
       if (pagination.current < pagination.totalPages) {
         if (pagination.current !== 0) setLoadingMore(true);
-        const res = await fetchAPI('GET', 'wholesalers', {
+        const res = await fetchAPI('GET','packages', {
           limit: constants.LIMIT_RECORDS_PER_PAGE,
           skip: pagination.current * constants.LIMIT_RECORDS_PER_PAGE,
           where: {
@@ -206,53 +232,21 @@ const Screen = () => {
         });
 
         if (pagination.current === 0) {
-          setWholesalers(res);
-          // setWholesalerOptions(res); // for filter
+          setPackages(res);
         }
         else { // onClick loadmore button
-          setWholesalers([...wholesalers, ...res]);
-          // setWholesalerOptions([...wholesalers, ...res]);
+          setPackages([...packages, ...res]);
           setLoadingMore(false);
         }
-        
+
         pagination.current++;
         setPagination({...pagination});
-        setLoadingWholesalerTable(false);
+        setLoadingPackageTable(false);
       }
     } catch (error) {
       // tslint:disable-next-line: no-console
       console.log(error);
     }
-  };
-
-  const LoadMore = async () => {
-    // try {
-    //   if (pagination['current'] < pagination['page']) {
-    //     setLoadingMore(true);
-    //     const ret = await fetchAPI('GET', {
-    //       path: 'wholesalers',
-    //       params: {
-    //         page: pagination['current'] + 1,
-    //         filter: [
-    //           {
-    //             where: {
-    //               deleted: false,
-    //               applicationId: config.appId,
-    //             },
-    //           },
-    //         ],
-    //       },
-    //     });
-    //     if (ret.res.data.length !== 0) {
-    //       setPagination(ret.res.pagination);
-    //       setwholesalers([...wholesalers, ...ret.res.data]);
-    //       setLoadingMore(false);
-    //     }
-    //   }
-    // } catch (error) {
-    //   // tslint:disable-next-line: no-console
-    //   console.log(error);
-    // }
   };
 
   const spinnerIcon = <LoadingOutlined style={{ fontSize: 20, color: '#fff' }} spin />;
@@ -263,7 +257,7 @@ const Screen = () => {
         <Button
           type='primary'
           icon={<PlusOutlined />}
-          onClick={() => Router.push('/addWholesaler')}
+          onClick={() => Router.push('/addPackage')}
           style={{ marginBottom: 16 }}
         >
           Thêm mới
@@ -274,24 +268,27 @@ const Screen = () => {
               cell: EditableCell,
             },
           }}
-          dataSource={wholesalers}
+          dataSource={packages}
           columns={mergedColumns}
-          loading={loadingWholesalerTable}
+          loading={loadingPackageTable}
           pagination={false}
           rowKey='id'
         />
       </Form>
       <div className={'pagination-area'}>
-        <Button type='primary' onClick={() => LoadMore()}>
-          <span>Hiển thị thêm</span>
-          <Spin className='spinner-loading' indicator={spinnerIcon} spinning={loadingMore} />
+        <Button
+            type='primary'
+            onClick={() => getPackages()}
+          >
+            <span>
+              Hiển thị thêm
+            </span>
+            <Spin className='spinner-loading' indicator={spinnerIcon} spinning={loadingMore}/>
         </Button>
-        <span className={'pagination-info'}>
-          {wholesalers.length} / {totalRecords}
-        </span>
+        <span className={'pagination-info'}>{packages.length} / {totalRecords}</span>
       </div>
     </Card>
   );
 };
 
-export const WholesalersScreen = Screen;
+export const PackagesScreen = Screen;

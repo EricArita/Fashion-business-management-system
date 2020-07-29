@@ -42,7 +42,7 @@ export class Contract extends Entity {
   @property({
     type: 'string',
   })
-  packagesId?: string;
+  packageId?: string;
 
   @property({
     type: 'date',
@@ -70,10 +70,6 @@ export class Contract extends Entity {
   })
   deleted?: boolean;
 
-  @property({
-    type: 'string',
-  })
-  packageId?: string;
   // Define well-known properties here
 
   // Indexer property to allow additional data

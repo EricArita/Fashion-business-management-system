@@ -25,7 +25,7 @@ export class PackageController {
     public packagesRepository : PackageRepository,
   ) {}
 
-  @post('/packagess', {
+  @post('/packages', {
     responses: {
       '200': {
         description: 'Package model instance',
@@ -49,7 +49,7 @@ export class PackageController {
     return this.packagesRepository.create(packages);
   }
 
-  @get('/packagess/count', {
+  @get('/packages/count', {
     responses: {
       '200': {
         description: 'Package model count',
@@ -63,7 +63,7 @@ export class PackageController {
     return this.packagesRepository.count(where);
   }
 
-  @get('/packagess', {
+  @get('/packages', {
     responses: {
       '200': {
         description: 'Array of Package model instances',
@@ -84,7 +84,7 @@ export class PackageController {
     return this.packagesRepository.find(filter);
   }
 
-  @patch('/packagess', {
+  @patch('/packages', {
     responses: {
       '200': {
         description: 'Package PATCH success count',
@@ -106,7 +106,7 @@ export class PackageController {
     return this.packagesRepository.updateAll(packages, where);
   }
 
-  @get('/packagess/{id}', {
+  @get('/packages/{id}', {
     responses: {
       '200': {
         description: 'Package model instance',
@@ -125,7 +125,7 @@ export class PackageController {
     return this.packagesRepository.findById(id, filter);
   }
 
-  @patch('/packagess/{id}', {
+  @patch('/packages/{id}', {
     responses: {
       '204': {
         description: 'Package PATCH success',
@@ -146,7 +146,7 @@ export class PackageController {
     await this.packagesRepository.updateById(id, packages);
   }
 
-  @put('/packagess/{id}', {
+  @put('/packages/{id}', {
     responses: {
       '204': {
         description: 'Package PUT success',
@@ -160,7 +160,7 @@ export class PackageController {
     await this.packagesRepository.replaceById(id, packages);
   }
 
-  @del('/packagess/{id}', {
+  @del('/packages/{id}', {
     responses: {
       '204': {
         description: 'Package DELETE success',
