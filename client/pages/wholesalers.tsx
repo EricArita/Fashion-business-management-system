@@ -1,6 +1,6 @@
 import React from 'react';
 // import { withRematch, initStore } from '@client/store';
-import { Page } from '../layouts/Page';
+import { LayoutPage } from '../layouts/LayoutPage';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
 import { WholesalersScreen } from '../ui_modules/partner/screens/Wholesalers';
@@ -18,7 +18,7 @@ class Company extends React.Component<Props, any> {
 
   render() {
     return (
-      <Page selectedMenuItem={'wholesalers'} title='Nhà phân phối'>
+      <LayoutPage selectedMenuItem={'wholesalers'} title='Nhà phân phối'>
         <PageHeader
           className='site-page-header'
           onBack={() => Router.push('/dashboard')}
@@ -26,7 +26,7 @@ class Company extends React.Component<Props, any> {
           ghost={false}
         />
         <WholesalersScreen />
-      </Page>
+      </LayoutPage>
     );
   }
 }

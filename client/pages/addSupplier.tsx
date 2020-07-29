@@ -1,6 +1,6 @@
 import React from 'react';
 // import { withRematch, initStore } from '@client/store';
-import { Page } from '../layouts/Page';
+import { LayoutPage } from '../layouts/LayoutPage';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
 
@@ -15,7 +15,7 @@ class Dashboard extends React.Component<any, any> {
 
   render() {
     return (
-      <Page selectedMenuItem={'suppliers'} title='Thêm nhà cung cấp'>
+      <LayoutPage selectedMenuItem={'suppliers'} title='Thêm nhà cung cấp'>
         <PageHeader
           className='site-page-header'
           onBack={() => Router.push('/suppliers')}
@@ -23,7 +23,7 @@ class Dashboard extends React.Component<any, any> {
           ghost={false}
         />
         <AddSupplier />
-      </Page>
+      </LayoutPage>
     );
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { DashboardScreen } from '../ui_modules/home';
 // import { withRematch, initStore } from '@client/store';
-import { Page } from '../layouts/Page';
+import { LayoutPage } from '../layouts/LayoutPage';
 import { PageHeader } from 'antd';
 
 interface Props {}
@@ -16,7 +16,7 @@ class Dashboard extends React.Component<Props, State> {
 
   render() {
     return (
-      <Page selectedMenuItem={'dashboard'} title='Tổng quan'>
+      <LayoutPage selectedMenuItem={'dashboard'} title='Tổng quan'>
         <PageHeader
           className='site-page-header'
           onBack={() => null}
@@ -25,7 +25,7 @@ class Dashboard extends React.Component<Props, State> {
           backIcon={false}
         />
         <DashboardScreen />
-      </Page>
+      </LayoutPage>
     );
   }
 }

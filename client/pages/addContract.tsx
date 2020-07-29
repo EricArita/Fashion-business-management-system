@@ -1,6 +1,6 @@
 import React from 'react';
 // import { withRematch, initStore } from '@client/store';
-import { Page } from '../layouts/Page';
+import { LayoutPage } from '../layouts/LayoutPage';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
 import { AddContractScreen } from '../ui_modules/sale/screens/AddContract';
@@ -14,7 +14,7 @@ class Dashboard extends React.Component<any, any> {
 
   render() {
     return (
-      <Page selectedMenuItem={'contracts'} title='Thêm loại hợp đồng'>
+      <LayoutPage selectedMenuItem={'contracts'} title='Thêm loại hợp đồng'>
         <PageHeader
           className='site-page-header'
           onBack={() => Router.push('/contracts')}
@@ -22,7 +22,7 @@ class Dashboard extends React.Component<any, any> {
           ghost={false}
         />
         <AddContractScreen />
-      </Page>
+      </LayoutPage>
     );
   }
 }

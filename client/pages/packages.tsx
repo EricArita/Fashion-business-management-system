@@ -1,6 +1,6 @@
 import React from 'react';
 // import { withRematch, initStore } from '@client/store';
-import { Page } from '../layouts/Page';
+import { LayoutPage } from '../layouts/LayoutPage';
 import { PageHeader } from 'antd';
 import Router from 'next/router';
 import { PackagesScreen } from '../ui_modules/sale/screens/Packages';
@@ -18,7 +18,7 @@ class Dashboard extends React.Component<Props, any> {
 
   render() {
     return (
-      <Page selectedMenuItem={'packages'} title='Gói khuyến mãi'>
+      <LayoutPage selectedMenuItem={'packages'} title='Gói khuyến mãi'>
         <PageHeader
           className='site-page-header'
           onBack={() => Router.push('/dashboard')}
@@ -26,7 +26,7 @@ class Dashboard extends React.Component<Props, any> {
           ghost={false}
         />
         <PackagesScreen />
-      </Page>
+      </LayoutPage>
     );
   }
 }

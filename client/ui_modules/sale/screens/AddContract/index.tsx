@@ -310,28 +310,28 @@ const Screen = () => {
   const handleScrollPackage = (e) => {
     const ele = e.target;
     if (ele.scrollTop + ele.clientHeight === ele.scrollHeight) {
-      //loadMore('Packages', packageOptions, paginationPackage);
+      getPackages();
     }
   };
 
   const handleScrollWholesaler = (e) => {
     const ele = e.target;
     if (ele.scrollTop + ele.clientHeight === ele.scrollHeight) {
-      //loadMore('wholesalers', wholesalerOptions, paginationWholesaler);
+      getWholesalers();
     }
   };
 
   const handleScrollProduct = (e) => {
     const ele = e.target;
     if (ele.scrollTop + ele.clientHeight === ele.scrollHeight) {
-      // loadMoreProduct(selectedCategoryId);
+      // getProducts();
     }
   };
 
   const handleScrollCategory = (e) => {
     const ele = e.target;
     if (ele.scrollTop + ele.clientHeight === ele.scrollHeight) {
-      //loadMore('categories', categoryOptions, paginationCategory);
+      getCategories();
     }
   };
 

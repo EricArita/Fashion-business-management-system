@@ -9,7 +9,7 @@ import { AppHeader } from '../components/AppHeader';
 // import * as jsCookie from 'js-cookie';
 
 
-export class Page extends React.Component<any, any> {
+export class LayoutPage extends React.Component<any, any> {
   // componentDidMount() {
   //   this.getToken();
   // }
