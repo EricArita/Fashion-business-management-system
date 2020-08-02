@@ -1,5 +1,6 @@
-import {Entity, model, property, hasMany} from '@loopback/repository';
+import {Entity, model, property, hasMany, belongsTo} from '@loopback/repository';
 import {Contract} from './contract.model';
+import { Supplier } from './supplier.model';
 
 @model({
   settings: {
@@ -52,17 +53,7 @@ export class Product extends Entity {
   @property({
     type: 'number',
   })
-  length?: number;
-
-  @property({
-    type: 'number',
-  })
-  width?: number;
-
-  @property({
-    type: 'string',
-  })
-  unit_dimension?: string;
+  quantity?: number;
 
   @property({
     type: 'number',

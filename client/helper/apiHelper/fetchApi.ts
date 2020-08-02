@@ -36,7 +36,7 @@ export const fetchAPI = async (httpMethod: string, api: string, requestBody?: an
                 : JSON.stringify({})  
       });
       if (response.ok) {
-        const jsonRespon = await response.json();
+        const jsonRespon = await response.text();
         return jsonRespon;
       }
     }

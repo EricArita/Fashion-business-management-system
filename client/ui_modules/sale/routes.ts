@@ -6,7 +6,7 @@ export const setupRoutes = ({ routes }: { routes: Routes }) => {
     .add('addPackage', '/addPackage', 'addPackage')
     .add('contracts', '/contracts', 'contracts')
     .add('addContract', '/addContract', 'addContract')
-    .add('editContract', '/editContract/:id&:code', 'editContract')
+    .add('editContract', '/editContract/:id', 'editContract')
     .add('orders', '/orders', 'orders')
     .add('addOrder', '/addOrder', 'addOrder')
     .add('editOrder', '/editOrder/:id', 'editOrder')

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Button, Table, Input } from 'antd';
-import Router from 'next/router';
+import { Card, Button, Table, Input, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 import { fetchAPI, constants } from '../../../../helper';
+import './style.less';
 
 const { Search } = Input;
 
@@ -12,29 +13,57 @@ const Screen = () => {
   const [totalRecords, setTotalRecords] = useState(0);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingProductTable, setLoadingProductTable] = useState(false);
+  const formatterPrice = new Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'VND',
+  });
 
   const columns = [
-    {
-      title: 'Tên',
-      dataIndex: 'name',
-      key: 'name',
-    },
     {
       title: 'Mã Sản Phẩm',
       dataIndex: 'code',
       key: 'code',
     },
     {
+      title: 'Tên',
+      dataIndex: 'name',
+      key: 'name',
+    },
+    {
+      title: 'Size',
+      dataIndex: 'size',
+      key: 'size',
+    },
+    {
+      title: 'Nhà cung cấp',
+      dataIndex: 'supplier',
+      key: 'supplier',
+      render: (supplier) => <span>{supplier.name}</span>
+    },
+    {
       title: 'Ảnh',
       dataIndex: 'photo',
       key: 'photo',
-      width: '10%',
-      render: (photo) => <img alt={photo} src={photo} style={{ width: '100%', height: 'auto' }} />
+      width: '12%',
+      render: (photo: any) => {
+        return (
+          <img alt={''} src={photo} style={{ width: '100%', height: 'auto' }} />
+        );
+      }
     },
     {
       title: 'Giá',
-      dataIndex: 'price',
       key: 'price',
+      render: (record: any) => {
+        return (
+          <span>{`${formatterPrice.format(record.price)} ${record.currency}`}</span>
+        );
+      }
+    },
+    {
+      title: 'Số lượng',
+      dataIndex: 'quantity',
+      key: 'quantity',
     },
   ];
 
@@ -67,13 +96,18 @@ const Screen = () => {
     try {
       if (pagination.current < pagination.totalPages) {
         if (pagination.current !== 0) setLoadingMore(true);
-        const res = await fetchAPI('GET', 'products', {
+        let res = await fetchAPI('GET', 'products', {
           limit: constants.LIMIT_RECORDS_PER_PAGE,
           skip: pagination.current * constants.LIMIT_RECORDS_PER_PAGE,
           where: {
             deleted: false
           }
         });
+
+        for(let i = 0; i < res.length; i++) {
+          const supplier = await fetchAPI('GET', `suppliers/${res[i].supplierId}`);
+          res[i].supplier = supplier;
+        }
 
         if (pagination.current === 0) {
           setProducts(res);
@@ -95,6 +129,8 @@ const Screen = () => {
     }
   };
 
+  const spinnerIcon = <LoadingOutlined style={{ fontSize: 20, color: '#fff' }} spin />;
+
   return (
     <Card bordered={false}>
       <Search
@@ -107,10 +143,13 @@ const Screen = () => {
         // onSearch={(value) => doSearchCode(value)} 
         style={{ width: 200 }} 
       />
-      <Table dataSource={products} columns={columns} rowKey='id' pagination={false} />
-      <div>
+      <div className="table-product">
+        <Table dataSource={products} columns={columns} rowKey='id' pagination={false} />
+      </div>
+      <div className={'pagination-area'}>
         <Button type='primary' onClick={() => getProducts()}>
           <span>Hiển thị thêm</span>
+          <Spin className='spinner-loading' indicator={spinnerIcon} spinning={loadingMore} />
         </Button>
         <span className={'pagination-info'}>
           {products.length} / {totalRecords}

@@ -3,9 +3,6 @@ import {Entity, model, property} from '@loopback/repository';
 @model({
   settings: {
     strict: false,
-    scope: {
-      limit: 10,
-    },
     strictObjectIDCoercion: true,
   }
 })

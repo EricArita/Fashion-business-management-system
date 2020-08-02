@@ -1,0 +1,220 @@
+.body-content {
+  margin-top: 40px;
+}
+
+.pagination-area {
+  display: flex;
+  justify-content: center;
+  margin-top: 15px;
+  .spinner-loading {
+    float: right;
+  }
+  .pagination-info {
+    margin-top: 6px;
+    margin-left: 3px;
+  }
+}
+
+.total-price-order-info {
+  float: right;
+  width: 450px;
+
+  .total-price-onboard {
+    background-color: green;
+  }
+
+  .total-price-await {
+    margin-left: 26px;
+    background-color: red;
+  }
+
+  .total-price-onboard,  .total-price-await {
+    display: inline-block;
+    position: relative;
+    height: 27px;
+    border-radius: 11px;
+    color: #fff;
+    padding-left: 3px;
+  }
+
+  .badge-price {
+    background-color: #fff;
+    color: grey;
+    border-radius: 8px;
+    width: 100px;
+    height: 100%;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center; 
+  }
+
+  .total-price-onboard .badge-price {
+    color: #00CC00;
+    border: 2px solid green;
+  }
+
+  .total-price-await .badge-price {
+    color: #FF0000;
+    border: 2px solid red;
+  }
+}
+
+.input-info-parcel {
+  width: 95%;
+}
+
+@media print {
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: #fff;
+    font-size: 9.5pt;
+  }
+}
+
+.print-container {
+  // width: 420pt;
+  // min-height: 595pt;
+  // border: 1px solid black;
+  // padding-to: 28.346457pt;
+  font: Georgia, 'Times New Roman', Times, serif;
+}
+
+.print-transform {
+  transform: rotate(90deg);
+}
+
+.print-header {
+  font-size: 9pt;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header-info-text {
+  font-size: 8pt;
+}
+
+.print-big-title {
+  font-size: 12pt;
+  text-align: center;
+}
+
+.client-info,
+.client-info-detail {
+  display: flex;
+  align-items: center;
+}
+
+.client-info {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.client-code-text {
+  font-size: 8pt;
+  width: 10pt;
+  margin-right: 5pt;
+}
+
+.client-code-container {
+  border: 1pt solid black;
+  padding: 3pt;
+  margin-right: 5pt;
+}
+
+.client-name {
+  font-weight: bold;
+  font-size: 12pt;
+}
+.client-address {
+  text-align: right;
+  font-size: 9pt;
+  font-style: italic;
+}
+
+.product-table {
+  width: 100%;
+  font-size: 10pt;
+  .price {
+    text-align: right;
+  }
+}
+
+table.product-table {
+  border-collapse: collapse;
+  border: 1px solid black;
+
+  th {
+    border: 1px solid black;
+  }
+
+  td {
+    border-right: 1px solid black;
+  }
+
+  td.discount-section {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-right: 0 none;
+  }
+
+  .upper-border-section {
+    border-top: 1px solid black;
+    // border-bottom: 1px solid black;
+    border-right: 0 none;
+  }
+
+  .bottom-border-section {
+    border-bottom: 1px solid black;
+  }
+
+  .no-border-right {
+    border-right: 0 none;
+    // text-align: left;
+  }
+}
+
+.stt, .product-code {
+  width: 28pt;
+}
+
+.product-price, .product-discount, .product-total-price {
+  width: 140pt;
+}
+
+.product-item {
+  width: 250pt;
+}
+
+.product-table-header {
+  text-align: center;
+}
+
+.left-text {
+  text-align: left;
+}
+
+.center-text {
+  text-align: center;
+}
+
+.border-top {
+  border-top: 1px solid black;
+}
+
+.signing {
+  display: flex;
+  padding-left: 4pt;
+  padding-right: 4pt;
+  div {
+    font-size: 8pt;
+    flex: 1;
+  }
+  div:nth-child(2) {
+    text-align: center;
+  }
+  div:last-child {
+    text-align: right;
+  }
+}

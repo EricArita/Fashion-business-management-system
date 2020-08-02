@@ -18,7 +18,8 @@
     "next-compose-plugins": "^2.2.0",
     "next-routes": "^1.4.2",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "react-to-print": "^2.9.0"
   },
   "devDependencies": {
     "@types/node": "^14.0.14",

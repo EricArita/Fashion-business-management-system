@@ -122,12 +122,6 @@ export class SideBar extends React.Component<SideBarProps, any> {
               </span>
             }
           >
-            <Menu.Item key='contracts' onClick={() => Router.push('/contracts')}>
-              <span>Quản lí hợp đồng</span>
-            </Menu.Item>
-            <Menu.Item key='packages' onClick={() => Router.push('/packages')}>
-              <span>Quản lí chiết khấu</span>
-            </Menu.Item>
             <Menu.Item key='orders' onClick={() => Router.push('/orders')}>
               <div>
                 Đơn hàng
@@ -136,9 +130,12 @@ export class SideBar extends React.Component<SideBarProps, any> {
                 </span>
               </div>
             </Menu.Item>
-            <Menu.Item key='7'>
-              <span>Công nợ</span>
+            <Menu.Item key='contracts' onClick={() => Router.push('/contracts')}>
+              <span>Quản lí hợp đồng</span>
             </Menu.Item>
+            <Menu.Item key='packages' onClick={() => Router.push('/packages')}>
+              <span>Quản lí chiết khấu</span>
+            </Menu.Item>           
           </Menu.ItemGroup>
         </Menu>
       </Layout.Sider>

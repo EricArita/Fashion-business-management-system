@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { Card, Button, Form, Input, Row, Col, Select, message } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import { SaveOutlined } from "@ant-design/icons";
 import Router from "next/router";
 import "./styles.less";
 import { fetchAPI, constants } from "../../../../helper";
 
-const Screen = () => {
+interface Props {
+  id: string;
+}
+
+const Screen = (props: Props) => {
   const { Option } = Select;
   const [form] = Form.useForm();
   const [wholesalerOptions, setWholesalerOptions] = useState([]);
@@ -36,6 +40,7 @@ const Screen = () => {
   const [isDisabled, setIsDisabled] = useState(false);
 
   useEffect(() => {
+    getEditedContract();
     countTotalPages("wholesalers");
     countTotalPages("packages");
     countTotalPages("categories");
@@ -105,6 +110,9 @@ const Screen = () => {
     });
 
     if (res.count === 0){
+      form.setFieldsValue({
+        productId: ''
+      });
       setProductOptions([]);
       paginationProduct.current = 0;
     }
@@ -119,6 +127,18 @@ const Screen = () => {
     setPaginationProduct({ ...paginationProduct });
     setSelectedCategoryId(categoryId);
   };
+
+  const getEditedContract = async () => {
+    const res = await fetchAPI('GET', `contracts/${props.id}`);
+    const product = res.productId !== undefined ? await fetchAPI('GET', `products/${res.productId}`) : undefined;
+    form.setFieldsValue({
+      code: res.code,
+      wholesalerId: res.wholesalerId,
+      categoryId: res.categoryId,
+      productId: product !== undefined ? product.name : '',
+      packageId: res.packageId
+    });
+  }
 
   const getWholesalers = async () => {
     try {
@@ -200,7 +220,6 @@ const Screen = () => {
 
   const getProducts = async () => {
     try {
-      console.log(paginationProduct);
       if (paginationProduct.current < paginationProduct.totalPages) {
         const res = await fetchAPI("GET", "products", {
           limit: constants.LIMIT_RECORDS_PER_PAGE,
@@ -277,9 +296,9 @@ const Screen = () => {
   //   }
   // };
 
-  const addContract = async (values: any) => {
+  const saveEditedContract = async (values: any) => {
     try {
-      const res = await fetchAPI("POST", "contracts", values);
+      const res = await fetchAPI("PATCH", `contracts/${props.id}`, values);
 
       if (res !== undefined) {
         message.success("Cập nhật dữ liệu thành công");
@@ -291,10 +310,10 @@ const Screen = () => {
       console.log(error);
     }
   };
-
+  
   const onSubmit = async (values: any) => {
     setIsDisabled(true);
-    await addContract(values);
+    await saveEditedContract(values);
     setIsDisabled(false);
   };
 
@@ -315,7 +334,7 @@ const Screen = () => {
   const handleScrollProduct = (e) => {
     const ele = e.target;
     if (ele.scrollTop + ele.clientHeight === ele.scrollHeight) {
-      // getProducts();
+      getProducts();
     }
   };
 
@@ -429,11 +448,11 @@ const Screen = () => {
           <Form.Item>
             <Button
               disabled={isDisabled}
-              icon={<PlusOutlined />}
+              icon={<SaveOutlined />}
               type="primary"
               htmlType="submit"
             >
-              Thêm mới
+              Lưu
             </Button>
           </Form.Item>
         </Row>
@@ -442,4 +461,4 @@ const Screen = () => {
   );
 };
 
-export const AddContractScreen = Screen;
+export const EditContractScreen = Screen;
