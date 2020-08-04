@@ -42,6 +42,12 @@ export class Order extends Entity {
   order_status?: string;
 
   @property({
+    type: 'array',
+    itemType: 'any'
+  })
+  items?: [];
+
+  @property({
     type: 'date',
     default: "$now"
   })

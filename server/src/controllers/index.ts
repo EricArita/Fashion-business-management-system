@@ -12,5 +12,3 @@ export * from './category-contract.controller';
 export * from './category-product.controller';
 export * from './product-contract.controller';
 export * from './supplier-product.controller';
-export * from './order-has-product-product.controller';
-export * from './order-has-product-order.controller';
