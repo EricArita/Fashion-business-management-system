@@ -41,15 +41,19 @@ export class Order extends Entity {
   })
   order_status?: string;
 
+  // @property({
+  //   type: 'array',
+  //   itemType: 'any'
+  // })
   @property({
     type: 'array',
-    itemType: 'any'
+    itemType: 'any',
+    default: []
   })
-  items?: [];
+  items?: any[];
 
   @property({
-    type: 'date',
-    default: "$now"
+    type: 'date'
   })
   export_date?: string;
 

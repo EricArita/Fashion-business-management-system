@@ -4,8 +4,7 @@ import { ShoppingOutlined, TeamOutlined, ProfileOutlined, ContainerOutlined } fr
 import './SideBar.less';
 import Router from 'next/router';
 // import { withRematch, initStore } from '@client/store';
-// import { fetchAPI } from '@client/core';
-// import { config } from '@client/config';
+import { fetchAPI } from '../helper';
 
 // const menuTheme = 'light';
 // const menuWidth = 256;
@@ -23,37 +22,29 @@ export class SideBar extends React.Component<SideBarProps, any> {
     };
   }
 
-  // async countNumerOfOrdersNotPrinted() {
-  //   try {
-  //     const ret: any = await fetchAPI('GET', {
-  //       path: 'orders',
-  //       params: {
-  //         filter: [
-  //           {
-  //             where: {
-  //               deleted: false,
-  //               order_status: 'await',
-  //               applicationId: config.appId,
-  //             },
-  //           } as any,
-  //         ],
-  //       },
-  //     });
+  async countNumerOfOrdersNotPrinted() {
+    try {
+      const res = await fetchAPI('GET', 'orders', {
+        where: {
+          deleted: false,
+          order_status: 'await',
+        },
+      });
 
-  //     if (ret.res.data !== undefined) {
-  //       this.setState({
-  //         numberOrdersNotPrinted: ret.res.data.length,
-  //       });
-  //     }
-  //   }
-  //   catch (error) {
-  //     // tslint:disable-next-line: no-console
-  //     console.log(error);
-  //   }
-  // }
+      if (res !== undefined) {
+        this.setState({
+          numberOrdersNotPrinted: res.length,
+        });
+      }
+    }
+    catch (error) {
+      // tslint:disable-next-line: no-console
+      console.log(error);
+    }
+  }
 
   componentDidMount() {
-    // this.countNumerOfOrdersNotPrinted();
+    this.countNumerOfOrdersNotPrinted();
   }
 
   render() {

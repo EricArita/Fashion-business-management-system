@@ -120,8 +120,11 @@ const Screen = () => {
       key: "export_date",
       editable: false,
       render: (_: any, record: any) => {
-        const date = moment(record.export_date);
-        return date.format("DD-MM-YYYY");
+        if (record.export_date !== undefined) {
+          const date = moment(record.export_date);
+          return date.format("DD-MM-YYYY");
+        }
+        return "";
       },
     },
     {
@@ -131,9 +134,9 @@ const Screen = () => {
       render: (_: any, record: any) => {
         switch (record.order_status) {
           case "await":
-            return <span style={{ color: "red" }}>Chưa thu tiền</span>;
+            return <span style={{ color: "red" }}>Chưa xuất </span>;
           case "onboard":
-            return <span style={{ color: "#3ADF00" }}>Đã đã thu tiền</span>;
+            return <span style={{ color: "#3ADF00" }}>Đã xuất</span>;
           case "cancel":
             return <span style={{ color: "#ccc" }}>Hủy</span>;
         }
@@ -183,7 +186,7 @@ const Screen = () => {
 
   const productItemTableColumns = [
     {
-      title: "Mã HH",
+      title: "Mã",
       dataIndex: "code",
       key: "code",
       editable: true,
@@ -195,52 +198,21 @@ const Screen = () => {
       editable: true,
     },
     {
-      title: "Khối lượng",
-      dataIndex: "weight",
-      key: "weight",
-      editable: false,
-    },
-    {
-      title: "Đơn vị khối lượng",
-      dataIndex: "unit_weight",
-      key: "unit_weight",
-      editable: false,
-    },
-    {
-      title: "Kích thước",
-      key: "length",
-      editable: false,
-      render: (_: any, record: any) => {
-        return (
-          <span>
-            {record.length !== undefined ? record.length : 0}x
-            {record.width !== undefined ? record.width : 0}x
-            {record.height !== undefined ? record.height : 0}
-          </span>
-        );
-      },
-    },
-    {
-      title: "Đơn vị kích thước",
-      dataIndex: "unit_dimension",
-      key: "unit_dimension",
+      title: "Kích cỡ",
+      dataIndex: "size",
+      key: "size",
       editable: false,
     },
     {
       title: "Giá",
+      dataIndex: "price",
       key: "price",
       editable: true,
       render: (_: any, record: any) => {
         return record.price !== undefined && record.price !== null
-          ? formatterPrice.format(record.price)
+          ? `${formatterPrice.format(record.price)}${record.currency}`
           : 0;
       },
-    },
-    {
-      title: "Tiền tệ",
-      dataIndex: "currency",
-      key: "currency",
-      editable: true,
     },
     {
       title: "Số lượng",
@@ -307,8 +279,7 @@ const Screen = () => {
     const inputType =
       col.dataIndex === "code" ||
       col.dataIndex === "name" ||
-      col.dataIndex === "unit_weight" ||
-      col.dataIndex === "unit_dimension" ||
+      col.dataIndex === "size" ||
       col.dataIndex === "currency"
         ? "text"
         : "number";
@@ -473,6 +444,7 @@ const Screen = () => {
 
   const getContracts = async (orderId: string) => {
     if (orderId !== undefined && orderId !== "") {
+      console.log(orders);
       const order = orders.find((item) => item.id === orderId);
       const wholesalerId =
         order.wholesalerId !== undefined ? order.wholesalerId : "";
@@ -497,25 +469,19 @@ const Screen = () => {
   };
 
   const showItemListModal = async (orderId: string) => {
+    console.log(orders);
     getContracts(orderId);
-
     const order = orders.find((item) => item.id === orderId);
+    
     if (order.order_status === "cancel") {
       setDisableBtnAddNewProduct(true);
-
-      order.items = await Promise.all(
-        order.items.map(async (productId, i) => {
-          const res = await fetchAPI("GET", `products/${productId}`);
-          return res;
-        })
-      );
-
-      setSelectedOrderId(orderId);
-      setVisibleItemListModal(true);
-      setLoadingItemTable(true);
-      setItemsOfOrder(order.items);
-      setLoadingItemTable(false);
-    };
+    }
+    
+    setSelectedOrderId(orderId);
+    setVisibleItemListModal(true);
+    setLoadingItemTable(true);
+    setItemsOfOrder(order.items);
+    setLoadingItemTable(false);
   };
 
   const editItem = async (record) => {
@@ -673,6 +639,7 @@ const Screen = () => {
           );
 
           if (orderPagination.current === 0 || reset) {
+            console.log(res);
             setOrders(res);
           } else {
             // onClick loadmore button
@@ -801,19 +768,21 @@ const Screen = () => {
       }
     }
 
-    let sumAwait = 0;
-    let sumOnBoard = 0;
-    // tslint:disable-next-line: prefer-for-of
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].price !== undefined && data[i].order_status !== "cancel") {
-        // tslint:disable-next-line: radix
-        data[i].order_status === "await"
-          ? (sumAwait += data[i].price)
-          : (sumOnBoard += data[i].price);
+    if (data !== undefined) {
+      let sumAwait = 0;
+      let sumOnBoard = 0;
+      // tslint:disable-next-line: prefer-for-of
+      for (let i = 0; i < data.length; i++) {
+        if (data[i].price !== undefined && data[i].order_status !== "cancel") {
+          // tslint:disable-next-line: radix
+          data[i].order_status === "await"
+            ? (sumAwait += data[i].price)
+            : (sumOnBoard += data[i].price);
+        }
       }
+      setTotalPriceOrderAwait(sumAwait);
+      setTotalPriceOrderOnBoard(sumOnBoard);
     }
-    setTotalPriceOrderAwait(sumAwait);
-    setTotalPriceOrderOnBoard(sumOnBoard);
   };
 
   const deleteOrder = async (orderId) => {
@@ -1065,13 +1034,13 @@ const Screen = () => {
         </Button>
         <div className="total-price-order-info">
           <div className="total-price-onboard">
-            <span>Tổng tiền đã in</span>
+            <span>Đã thanh toán</span>
             <span className="badge-price">
               {formatterPrice.format(totalPriceOrdersOnBoard)}
             </span>
           </div>
           <div className="total-price-await">
-            <span>Tổng tiền chưa in</span>
+            <span>Chưa thanh toán</span>
             <span className="badge-price">
               {formatterPrice.format(totalPriceOrdersAwait)}
             </span>
