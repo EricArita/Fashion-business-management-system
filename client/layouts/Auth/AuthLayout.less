@@ -1,0 +1,46 @@
+@space-between-item: 20px;
+@primary-text-color: #fff;
+.auth-container {
+  width: 100%;
+  // min-width: 400px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  background-size: cover;
+  font-family: Roboto, sans-serif;
+  color: @primary-text-color;
+  .space-between-item {
+    margin-bottom: @space-between-item;
+    text-align: center;
+  }
+  .ant-tabs-bar,
+  .ant-tabs-nav-scroll {
+    display: none;
+  }
+  a:hover {
+    color: #eaa6a4;
+  }
+
+  .heading-text-props {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 35px;
+  }
+  .content-text-props {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 16px;
+    line-height: 19px;
+    text-align: justify;
+    text-align-last: center;
+  }
+  .form-wrapper {
+    width: 100%;
+    max-width: 350px;
+    margin: 100px 0;
+  }
+}
