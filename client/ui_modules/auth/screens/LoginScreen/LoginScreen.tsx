@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { Form, message, Input, Button, Divider } from 'antd';
 import { AuthLayout } from '../../../../layouts/Auth/AuthLayout';
-import { fetchAPI } from '../../../../helper';
 import { initFirebase } from '../../../../firebase';
 import firebase from 'firebase';
 import './LoginScreen.less';
